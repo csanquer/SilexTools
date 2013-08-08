@@ -49,7 +49,7 @@ class CacheClearCommand extends Command
         
         $output->writeln('Clearing Application cache ...');
         
-        $files = $finder->directories()->depth('== 0')->in($this->cacheDir);
+        $files = $finder->in($this->cacheDir);
         $fs->remove($files);
     }
 }
