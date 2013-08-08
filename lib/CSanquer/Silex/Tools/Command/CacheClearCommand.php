@@ -16,14 +16,29 @@ use Symfony\Component\Finder\Finder;
  */
 class CacheClearCommand extends Command
 {
+    protected $cacheDir;
+            
+    public function __construct($name = null, $cacheDir = null)
+    {
+        parent::__construct($name);
+        if ($cacheDir) {
+            $this->cacheDir = $cacheDir;
+        }
+    }
+    
+    public function setApplication(\Symfony\Component\Console\Application $application = null)
+    {
+        parent::setApplication($application);
+        if (!$this->cacheDir && method_exists($application, 'getCacheDir')) {
+            $this->cacheDir = $application->getCacheDir();
+        }
+    }
     
     protected function configure()
     {
         $this
-                ->setName('cache:clear')
-                ->setDescription('cache directory clearing command')
-//            ->addArgument('name', InputArgument::OPTIONAL, '')
-//            ->addOption('opt', null, InputOption::VALUE_NONE, '')
+            ->setName('cache:clear')
+            ->setDescription('cache directory clearing command')
         ;
     }
 
@@ -34,7 +49,7 @@ class CacheClearCommand extends Command
         
         $output->writeln('Clearing Application cache ...');
         
-        $files = $finder->directories()->depth('== 0')->in($this->getApplication()->getAppDir().'/cache');
+        $files = $finder->directories()->depth('== 0')->in($this->cacheDir);
         $fs->remove($files);
     }
 }

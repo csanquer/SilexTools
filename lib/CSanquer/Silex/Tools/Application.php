@@ -6,36 +6,96 @@ use Symfony\Component\Console\Application as BaseApplication;
 
 class Application extends BaseApplication
 {
-    protected $projectDir;
+    protected $rootDir;
+    
+    protected $appDir;
+    
+    protected $configDir;
+    
+    protected $webDir;
+    
+    protected $cacheDir;
+    
+    protected $logsDir;
+    
+    protected $binDir;
+    
+    protected $translationDir;
 
-    public function __construct($name = 'UNKNOWN', $version = 'UNKNOWN', $projectRootDir = null)
+    /**
+     * 
+     * @param string $rootDir
+     * @param string $name
+     * @param string $version
+     * @param string $appDir
+     * @param string $configDir
+     * @param string $webDir
+     * @param string $cacheDir
+     * @param string $logsDir
+     * @param string $binDir
+     * @param string $translationDir
+     */
+    public function __construct(
+        $rootDir, 
+        $name = 'UNKNOWN', 
+        $version = 'UNKNOWN',
+        $appDir = '',
+        $configDir = 'config', 
+        $webDir = 'web', 
+        $cacheDir = 'cache', 
+        $logsDir = 'logs', 
+        $binDir = 'bin', 
+        $translationDir = 'translation'
+    )
     {
+        $this->rootDir = realpath($rootDir);
+        $this->appDir = $appDir;
+        $this->configDir = $configDir;
+        $this->webDir = $webDir;
+        $this->cacheDir = $cacheDir;
+        $this->logsDir = $logsDir;
+        $this->binDir = $binDir;
+        $this->translationDir = $translationDir;
         parent::__construct($name, $version);
-        $this->projectDir = realpath($projectRootDir);
+    }
+    
+    public function getRootDir()
+    {
+        return $this->rootDir;
     }
 
-    public function getProjectDir()
+    public function getAppDir()
     {
-        return $this->projectDir;
+        return $this->getRootDir().DS.$this->appDir;
+    }
+
+    public function getConfigDir()
+    {
+        return $this->getAppDir().DS.$this->configDir;
+    }
+
+    public function getWebDir()
+    {
+        return $this->getRootDir().DS.$this->webDir;
+    }
+
+    public function getCacheDir()
+    {
+        return $this->getAppDir().DS.$this->cacheDir;
+    }
+
+    public function getLogsDir()
+    {
+        return $this->getAppDir().DS.$this->logsDir;
     }
 
     public function getBinDir()
     {
-        return $this->projectDir.DS.'bin';
+        return $this->getRootDir().DS.$this->binDir;
     }
-    
-    public function getAppDir()
+
+    public function getTranslationDir()
     {
-        return $this->projectDir.DS.'app';
-    }
-    
-    public function getConfigDir()
-    {
-        return $this->getAppDir().DS.'config';
-    }
-    
-    public function getWebDir()
-    {
-        return $this->projectDir.DS.'web';
+        return $this->getAppDir().DS.$this->translationDir;
     }
 }
