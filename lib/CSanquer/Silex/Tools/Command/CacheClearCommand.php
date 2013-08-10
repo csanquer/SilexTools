@@ -47,9 +47,8 @@ class CacheClearCommand extends Command
         $finder = new Finder();
         $fs = new Filesystem();
         
-        $output->writeln('Clearing Application cache ...');
-        
         $files = $finder->in($this->cacheDir);
         $fs->remove($files);
+        $output->writeln('Cache directory <info>'.$this->cacheDir.'</info> cleared.');
     }
 }
