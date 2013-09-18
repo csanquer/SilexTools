@@ -6,6 +6,12 @@ use Symfony\Component\Console\Application as BaseApplication;
 
 class Application extends BaseApplication
 {
+    /**
+     *
+     * @var \Silex\Application
+     */
+    protected $silexApplication;
+
     protected $rootDir;
     
     protected $appDir;
@@ -24,6 +30,7 @@ class Application extends BaseApplication
 
     /**
      * 
+     * @param \Silex\Application $application
      * @param string $rootDir
      * @param string $name
      * @param string $version
@@ -36,6 +43,7 @@ class Application extends BaseApplication
      * @param string $translationDir
      */
     public function __construct(
+        $application,
         $rootDir, 
         $name = 'UNKNOWN', 
         $version = 'UNKNOWN',
@@ -48,6 +56,7 @@ class Application extends BaseApplication
         $translationDir = 'translation'
     )
     {
+        $this->setSilexApplication($application);
         $this->rootDir = realpath($rootDir);
         $this->appDir = $appDir;
         $this->configDir = $configDir;
@@ -59,6 +68,26 @@ class Application extends BaseApplication
         parent::__construct($name, $version);
     }
     
+    /**
+     * 
+     * @return \Silex\Application
+     */
+    public function getSilexApplication()
+    {
+        return $this->silexApplication;
+    }
+
+    /**
+     * 
+     * @param \Silex\Application $application
+     * @return Application
+     */
+    public function setSilexApplication(\Silex\Application $application)
+    {
+        $this->silexApplication = $application;
+        return $this;
+    }
+
     public function getRootDir()
     {
         return $this->rootDir;
@@ -66,7 +95,7 @@ class Application extends BaseApplication
 
     public function getAppDir()
     {
-        return $this->getRootDir().DS.$this->appDir;
+        return $this->getRootDir().( $this->appDir ? DS.$this->appDir : '');
     }
 
     public function getConfigDir()
