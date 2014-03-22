@@ -21,11 +21,6 @@ use \Symfony\Component\Process\ProcessBuilder;
  */
 class ServerRunCommand extends Command
 {
-    public function setApplication(Application $application = null)
-    {
-        parent::setApplication($application);
-    }
-
     protected function configure()
     {
         $this
