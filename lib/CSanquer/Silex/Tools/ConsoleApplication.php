@@ -2,61 +2,63 @@
 
 namespace CSanquer\Silex\Tools;
 
-use Symfony\Component\Console\Application as BaseApplication;
+use \Silex\Application;
+use \Symfony\Component\Console\Application as BaseApplication;
+use Symfony\Component\Console\Input\InputOption;
 
-class Application extends BaseApplication
+class ConsoleApplication extends BaseApplication
 {
     /**
      *
-     * @var \Silex\Application
+     * @var Application
      */
     protected $silexApplication;
 
     protected $rootDir;
-    
+
     protected $appDir;
-    
+
     protected $varDir;
-    
+
     protected $configDir;
-    
+
     protected $webDir;
-    
+
     protected $cacheDir;
-    
+
     protected $logsDir;
-    
+
     protected $binDir;
-    
+
     protected $translationDir;
 
     /**
-     * 
-     * @param \Silex\Application $application Silex application
-     * @param string $rootDir project directory path
-     * @param string $name default = 'UNKNOWN'
-     * @param string $version $name default = 'UNKNOWN'
-     * @param string $appDir $name default = '' directory in root directory that contain config , translation, views, php silex bootstrap files
-     * @param string $varDir $name default = 'var' directory in root directory that contain cache and logs
-     * @param string $configDir default = 'config' configuration directory name in app directory
-     * @param string $webDir default = 'web' web document root directory name in root directory
-     * @param string $cacheDir default = 'cache' cache directory name
-     * @param string $logsDir default = 'logs' cache directory name
-     * @param string $binDir default = 'bin' binaries directory name in root directory
-     * @param string $translationDir = default = 'translation' translation directory name in app directory
+     *
+     * @param Application $application    Silex application
+     * @param string      $rootDir        project directory path
+     * @param string      $name           default = 'UNKNOWN'
+     * @param string      $version        $name default = 'UNKNOWN'
+     * @param string      $appDir         $name default = '' directory in root directory that contain config , translation, views, php silex bootstrap files
+     * @param string      $varDir         $name default = 'var' directory in root directory that contain cache and logs
+     * @param string      $configDir      default = 'config' configuration directory name in app directory
+     * @param string      $webDir         default = 'web' web document root directory name in root directory
+     * @param string      $cacheDir       default = 'cache' cache directory name
+     * @param string      $logsDir        default = 'logs' cache directory name
+     * @param string      $binDir         default = 'bin' binaries directory name in root directory
+     * @param string      $translationDir = default = 'translation' translation directory name in app directory
      */
     public function __construct(
         $application,
-        $rootDir, 
-        $name = 'UNKNOWN', 
+        $rootDir,
+        $name = 'UNKNOWN',
         $version = 'UNKNOWN',
         $appDir = '',
         $varDir = 'var',
-        $configDir = 'config', 
-        $webDir = 'web', 
-        $cacheDir = 'cache', 
-        $logsDir = 'logs', 
-        $binDir = 'bin', 
+        $configDir = 'config',
+        $webDir = 'web',
+        $cacheDir = 'cache',
+        $logsDir = 'logs',
+        $binDir = 'bin',
         $translationDir = 'translation'
     )
     {
@@ -71,11 +73,14 @@ class Application extends BaseApplication
         $this->binDir = $binDir;
         $this->translationDir = $translationDir;
         parent::__construct($name, $version);
+
+        $this->getDefinition()->addOption(new InputOption('--env', '-e', InputOption::VALUE_REQUIRED, 'The Environment name.', 'dev'));
+        $this->getDefinition()->addOption(new InputOption('--no-debug', null, InputOption::VALUE_NONE, 'disabling debug'));
     }
-    
+
     /**
-     * 
-     * @return \Silex\Application
+     *
+     * @return Application
      */
     public function getSilexApplication()
     {
@@ -83,13 +88,14 @@ class Application extends BaseApplication
     }
 
     /**
-     * 
-     * @param \Silex\Application $application
+     *
+     * @param  Application $application
      * @return Application
      */
-    public function setSilexApplication(\Silex\Application $application)
+    public function setSilexApplication(Application $application)
     {
         $this->silexApplication = $application;
+
         return $this;
     }
 
@@ -107,7 +113,7 @@ class Application extends BaseApplication
     {
         return $this->getRootDir().( $this->varDir ? DS.$this->varDir : '');
     }
-    
+
     public function getConfigDir()
     {
         return $this->getAppDir().DS.$this->configDir;
@@ -117,7 +123,7 @@ class Application extends BaseApplication
     {
         return $this->getAppDir().DS.$this->translationDir;
     }
-    
+
     public function getWebDir()
     {
         return $this->getRootDir().DS.$this->webDir;
@@ -127,7 +133,7 @@ class Application extends BaseApplication
     {
         return $this->getRootDir().DS.$this->binDir;
     }
-    
+
     public function getCacheDir()
     {
         return $this->getVarDir().DS.$this->cacheDir;

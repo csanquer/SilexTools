@@ -25,7 +25,7 @@ class AsseticDumpCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $app = $this->getApplication()->getSilexApplication();
-        
+
         $dumper = $app['assetic.dumper'];
         if ($dumper) {
             if (isset($app['twig'])) {

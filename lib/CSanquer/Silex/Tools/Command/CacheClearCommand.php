@@ -2,6 +2,7 @@
 
 namespace CSanquer\Silex\Tools\Command;
 
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,7 +18,7 @@ use Symfony\Component\Finder\Finder;
 class CacheClearCommand extends Command
 {
     protected $cacheDir;
-            
+
     public function __construct($name = null, $cacheDir = null)
     {
         parent::__construct($name);
@@ -25,15 +26,15 @@ class CacheClearCommand extends Command
             $this->cacheDir = $cacheDir;
         }
     }
-    
-    public function setApplication(\Symfony\Component\Console\Application $application = null)
+
+    public function setApplication(Application $application = null)
     {
         parent::setApplication($application);
         if (!$this->cacheDir && method_exists($application, 'getCacheDir')) {
             $this->cacheDir = $application->getCacheDir();
         }
     }
-    
+
     protected function configure()
     {
         $this
@@ -46,7 +47,7 @@ class CacheClearCommand extends Command
     {
         $finder = new Finder();
         $fs = new Filesystem();
-        
+
         $files = $finder->in($this->cacheDir);
         $fs->remove($files);
         $output->writeln('Cache directory <info>'.$this->cacheDir.'</info> cleared.');
