@@ -12,68 +12,23 @@ class ConsoleApplication extends BaseApplication
      *
      * @var Application
      */
-    protected $silexApplication;
-
-    protected $rootDir;
-
-    protected $appDir;
-
-    protected $varDir;
-
-    protected $configDir;
-
-    protected $webDir;
-
-    protected $cacheDir;
-
-    protected $logsDir;
-
-    protected $binDir;
-
-    protected $translationDir;
+    protected $silex;
 
     /**
      *
-     * @param Application $application    Silex application
-     * @param string      $rootDir        project directory path
+     * @param Application $silex    Silex application
      * @param string      $name           default = 'UNKNOWN'
      * @param string      $version        $name default = 'UNKNOWN'
-     * @param string      $appDir         $name default = '' directory in root directory that contain config , translation, views, php silex bootstrap files
-     * @param string      $varDir         $name default = 'var' directory in root directory that contain cache and logs
-     * @param string      $configDir      default = 'config' configuration directory name in app directory
-     * @param string      $webDir         default = 'web' web document root directory name in root directory
-     * @param string      $cacheDir       default = 'cache' cache directory name
-     * @param string      $logsDir        default = 'logs' cache directory name
-     * @param string      $binDir         default = 'bin' binaries directory name in root directory
-     * @param string      $translationDir = default = 'translation' translation directory name in app directory
      */
     public function __construct(
-        $application,
-        $rootDir,
+        $silex,
         $name = 'UNKNOWN',
-        $version = 'UNKNOWN',
-        $appDir = '',
-        $varDir = 'var',
-        $configDir = 'config',
-        $webDir = 'web',
-        $cacheDir = 'cache',
-        $logsDir = 'logs',
-        $binDir = 'bin',
-        $translationDir = 'translation'
+        $version = 'UNKNOWN'
     )
     {
-        $this->setSilexApplication($application);
-        $this->rootDir = realpath($rootDir);
-        $this->appDir = $appDir;
-        $this->varDir = $varDir;
-        $this->configDir = $configDir;
-        $this->webDir = $webDir;
-        $this->cacheDir = $cacheDir;
-        $this->logsDir = $logsDir;
-        $this->binDir = $binDir;
-        $this->translationDir = $translationDir;
+        $this->setSilex($silex);
         parent::__construct($name, $version);
-
+        
         $this->getDefinition()->addOption(new InputOption('--env', '-e', InputOption::VALUE_REQUIRED, 'The Environment name.', 'dev'));
         $this->getDefinition()->addOption(new InputOption('--no-debug', null, InputOption::VALUE_NONE, 'disabling debug'));
     }
@@ -81,66 +36,133 @@ class ConsoleApplication extends BaseApplication
     /**
      *
      * @return Application
+     * @deprecated since v0.4
      */
     public function getSilexApplication()
     {
-        return $this->silexApplication;
+        return $this->getSilex();
     }
 
     /**
      *
      * @param  Application $application
-     * @return Application
+     * @return ConsoleApplication
+     * @deprecated since v0.4
      */
     public function setSilexApplication(Application $application)
     {
-        $this->silexApplication = $application;
+        return $this->setSilex($application);
+    }
+    
+    /**
+     *
+     * @return Application
+     */
+    public function getSilex()
+    {
+        return $this->silex;
+    }
+    
+    /**
+     *
+     * @param  Application $silex
+     * @return ConsoleApplication
+     */
+    public function setSilex(Application $silex)
+    {
+        $this->silex = $silex;
 
         return $this;
     }
 
+    /**
+     * 
+     * @param string $name
+     * @return mixed
+     */
+    public function getSilexService($name)
+    {
+        return isset($this->silex[$name]) ? $this->silex[$name] : null;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
     public function getRootDir()
     {
-        return $this->rootDir;
+        return $this->getSilexService('root_dir');
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function getAppDir()
     {
-        return $this->getRootDir().( $this->appDir ? DS.$this->appDir : '');
+        return $this->getSilexService('app_dir');
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function getVarDir()
     {
-        return $this->getRootDir().( $this->varDir ? DS.$this->varDir : '');
+        return $this->getSilexService('var_dir');
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function getConfigDir()
     {
-        return $this->getAppDir().DS.$this->configDir;
+        return $this->getSilexService('config_dir');
     }
 
-    public function getTranslationDir()
+    /**
+     * 
+     * @return string
+     */
+    public function getTranslationsDir()
     {
-        return $this->getAppDir().DS.$this->translationDir;
+        return $this->getSilexService('translations_dir');
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function getWebDir()
     {
-        return $this->getRootDir().DS.$this->webDir;
+        return $this->getSilexService('web_dir');
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function getBinDir()
     {
-        return $this->getRootDir().DS.$this->binDir;
+        return $this->getSilexService('bin_dir');
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function getCacheDir()
     {
-        return $this->getVarDir().DS.$this->cacheDir;
+        return $this->getSilexService('cache_dir');
     }
 
-    public function getLogsDir()
+    /**
+     * 
+     * @return string
+     */
+    public function getLogDir()
     {
-        return $this->getVarDir().DS.$this->logsDir;
+        return $this->getSilexService('log_dir');
     }
 }
